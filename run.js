@@ -74,10 +74,10 @@ const init = async () => {
           console.log('Uniswap ETH/DAI rates', uniswapRates);
 
           const gasPrice = await web3.eth.getGasPrice();
-          console.log(web3.eth.estimateGas({from: web3.eth.accounts[0], to: "0xEDA8A2E1dfA5B93692D2a9dDF833B6D7DF6D5f93", amount: web3.toWei(1, "ether")}))
-
+          console.log(await web3.eth.estimateGas({from: web3.eth.accounts[0], to: "0xEDA8A2E1dfA5B93692D2a9dDF833B6D7DF6D5f93", amount: web3.utils.toWei((1).toString())}))
+            const cost = await web3.eth.estimateGas({from: web3.eth.accounts[0], to: "0xEDA8A2E1dfA5B93692D2a9dDF833B6D7DF6D5f93", amount: web3.utils.toWei((1).toString())});
             //update scalar with Web3 estimateGas()
-            const txCost = 200000 * parseInt(gasPrice);
+            const txCost = cost * parseInt(gasPrice);
             const currentEthPrice = (uniswapRates.buy + uniswapRates.sell) / 2; 
             const profit1 = (parseInt(BALANCE_ETH_WEI) / 10 ** 18) * (uniswapRates.sell - kyberRates.buy) - (txCost / 10 ** 18) * ETH_TICKER_PRICE;
             const profit2 = (parseInt(BALANCE_ETH_WEI) / 10 ** 18) * (kyberRates.sell - uniswapRates.buy) - (txCost / 10 ** 18) * ETH_TICKER_PRICE;
