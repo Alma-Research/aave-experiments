@@ -63,13 +63,13 @@ const init = async () => {
 
         const uniswapResults = await Promise.all([
             daiWeth.getOutputAmount(new TokenAmount(dai, BALANCE_DAI_WEI)),
-            daiWeth.getOutputAmount(new TokenAmount(dai, BALANCE_ETH_WEI))
+            daiWeth.getOutputAmount(new TokenAmount(weth, BALANCE_ETH_WEI))
         ]);
 
         console.log("uniswap results", uniswapResults)
-        const uniswapRates = {
-            buy: parseFloat( BALANCE_DAI_WEI / (uniswapResults[0][0].toExact() * 10 ** 18)),
-            sell: parseFloat(uniswapResults[1][0].toExact() / BALANCE_ETH),
+          const uniswapRates = {
+            buy: parseFloat( AMOUNT_DAI_WEI / (uniswapResults[0][0].toExact() * 10 ** 18)),
+            sell: parseFloat(uniswapResults[1][0].toExact() / AMOUNT_ETH),
           };
           console.log('Uniswap ETH/DAI rates', uniswapRates);
 
