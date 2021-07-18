@@ -2,10 +2,10 @@ require('dotenv').config();
 const Web3 = require('web3');
 const abis = require('./abis');
 const {mainnet : addresses } = require('./addresses');
-const Telegraf = require('telegraf');
-const bot = new Telegraf('insert_bot_token_here');
+// const Telegraf = require('telegraf');
+// const bot = new Telegraf(process.env.INSERT_BOT_TOKEN_HERE);
 
-const { ChainId, Token, TokenAmount, Pair } = require('@uniswap/sdk')
+const { ChainId, Token, TokenAmount, Pair, Fetcher } = require('@uniswap/sdk');
 const web3 = new Web3(
    new Web3.providers.WebsocketProvider(process.env.INFURA_URL)
 )
@@ -24,11 +24,18 @@ const BALANCE_ETH_WEI = web3.utils.toWei(BALANCE_ETH.toString());
 const BALANCE_DAI_WEI = web3.utils.toWei((BALANCE_ETH * ETH_TICKER_PRICE).toString());
 const init = async () => {
     const [dai, weth] = await Promise.all(
-        [addresses.tokens.dao, addresses.tokens.weth].map(tokenAddress => (
+        [addresses.tokens.dai, addresses.tokens.weth].map(tokenAddress => (
+          Fetcher.fetchTokenData(
             ChainId.MAINNET,
-            tokenAddress
-        ))
-    )
+            tokenAddress,
+          )
+      )));
+      const daiWeth = await Fetcher.fetchPairData(
+        dai,
+        weth,
+      );
+
+
     web3.eth.subscribe('newBlockHeaders').on('data', async block => {
         console.log(`new block number`, block.number)
     
@@ -52,10 +59,19 @@ const init = async () => {
             sell: parseFloat(kyberResults[1].expectedRate / (10 ** 18))
         }
         console.log("kyber Eth/dai", kyberRates);
+
+        const uniswapResults = await Promise.all([
+            daiWeth.getOutputAmount(new TokenAmount(dai, BALANCE_DAI_WEI)),
+            daiWeth.getOutputAmount(new TokenAmount(dai, BALANCE_ETH_WEI))
+        ]);
+
+        console.log("uniswap results", uniswapResults)
+
     
     }).on('error', error => {
         console.log("error", error);
     })    
 }
 
+init();
 

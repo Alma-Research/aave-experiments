@@ -1,2 +1,2 @@
-# aave-experiments
-Aave Flash Loan Arbitreur with Telegram and Twitter integration
+# flashloans-experiments
+Aave/Dydx Flash Loan Arbitreur with Telegram and Twitter integration
