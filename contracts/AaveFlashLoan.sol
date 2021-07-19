@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity >=0.5.0 <0.8.4;
 pragma experimental ABIEncoderV2;
 
 import "@studydefi/money-legos/aave/contracts/ILendingPool.sol";
