@@ -3,8 +3,9 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
+require('dotenv').config();
 const hre = require("hardhat");
-
+const { mainnet: addresses } = require('../addresses');
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -14,12 +15,18 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const Flashloan = await hre.ethers.getContractFactory("DydxFlashloan");
+  const flashloan = await Flashloan.deploy(    
+    addresses.kyber.kyberNetworkProxy,
+    addresses.uniswap.router,
+    addresses.tokens.weth,
+    addresses.tokens.dai,
+    '0xded06bD6e1516439E97d87F0140aA8966266b232'
+    );
 
-  await greeter.deployed();
+  await flashloan.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("flashloan deployed to:", flashloan.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
